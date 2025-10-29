@@ -59,10 +59,10 @@
           <table class="report_table">
             <thead class="[&_tr]:border-b">
               <tr class="border-b transition-colors data-[state=selected]:bg-muted hover:bg-muted/50">
-                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Patient</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Sample ID</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Code</th>
-                <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0">Status</th>
+                <th >Patient</th>
+                <th >Sample ID</th>
+                <th >Code</th>
+                <th >Status</th>
               </tr>
             </thead>
             <tbody class="[&_tr:last-child]:border-0">
@@ -102,6 +102,10 @@
     color: #2b303b;
     font-weight: 600;
     margin: 10px 0;
+}
+
+table.report_table {
+    width: 100%;
 }
 
 .activate_card input{
