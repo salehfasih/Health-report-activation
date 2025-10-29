@@ -46,16 +46,16 @@
         this.message = '';
         try {
           const base = (window.APP_URL || 'https://health-report-activation.vercel.app');
+          const shopDomain = '{{ shop.permanent_domain }}';
           const fd = new FormData();
           fd.append('customer_id', this.customerId);
           fd.append('activation_code', this.code);
-          fd.append('shop', '{{ shop.permanent_domain }}');
+          fd.append('shop', shopDomain);
+          console.log('Sending request with shop domain:', shopDomain);
           const res = await fetch(base + '/api/save-activation', { 
             method: 'POST', 
-            body: fd,
-            headers: {
-              'X-Shopify-Shop-Domain': '{{ shop.permanent_domain }}'
-            }
+            body: fd
+            // Note: Custom headers may be blocked by CORS, so shop is sent in FormData
           });
           const data = await res.json();
           if (!res.ok || data?.success !== true) {

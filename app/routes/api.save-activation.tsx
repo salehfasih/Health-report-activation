@@ -49,29 +49,52 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return new Response(null, { status: 204, headers });
   }
 
-  // Get shop domain from referer or header
-  const referer = request.headers.get("Referer") || "";
-  const shopHeader = request.headers.get("X-Shopify-Shop-Domain");
-  let shopDomain = shopHeader;
+  // Read form data once (FormData can only be read once per request)
+  const formData = await request.formData();
+  
+  // Get shop domain from multiple sources in priority order
+  // Note: Custom headers may be blocked by CORS, so FormData is more reliable
+  let shopDomain = 
+    formData.get("shop")?.toString() ||
+    request.headers.get("X-Shopify-Shop-Domain") ||
+    new URL(request.url).searchParams.get("shop") ||
+    "";
 
-  // Extract shop domain from referer if available
-  if (!shopDomain && referer) {
-    const shopMatch = referer.match(/https?:\/\/([^.]+\.myshopify\.com)/);
-    if (shopMatch) {
-      shopDomain = shopMatch[1];
+  // Extract shop domain from Origin or Referer if still not found
+  if (!shopDomain) {
+    const origin = request.headers.get("Origin") || "";
+    const referer = request.headers.get("Referer") || "";
+    const source = origin || referer;
+    
+    if (source) {
+      // Match patterns like: https://h1e4vg-m3.myshopify.com
+      const shopMatch = source.match(/https?:\/\/([^\/]+)/);
+      if (shopMatch && shopMatch[1].includes("myshopify.com")) {
+        shopDomain = shopMatch[1];
+      }
     }
   }
 
-  // Get shop from query params or form data as fallback
-  if (!shopDomain) {
-    const url = new URL(request.url);
-    shopDomain = url.searchParams.get("shop") || "";
+  // Normalize shop domain - ensure it's in the correct format
+  if (shopDomain) {
+    // Remove protocol if present
+    shopDomain = shopDomain.replace(/^https?:\/\//, "");
+    // Remove trailing slash
+    shopDomain = shopDomain.replace(/\/$/, "");
+    // Ensure it includes .myshopify.com if it's a Shopify shop
+    if (!shopDomain.includes(".") && shopDomain.endsWith(".myshopify.com") === false) {
+      // If it's just the shop name, we need the full domain
+      // But shop.permanent_domain should already include .myshopify.com
+    }
   }
 
-  if (!shopDomain) {
-    const formData = await request.formData();
-    shopDomain = (formData.get("shop") as string) || "";
-  }
+  // Log for debugging (remove in production)
+  console.log("Shop domain extraction:", {
+    header: request.headers.get("X-Shopify-Shop-Domain"),
+    formDataShop: formData.get("shop"),
+    referer: request.headers.get("Referer"),
+    normalized: shopDomain,
+  });
 
   let admin;
 
@@ -146,10 +169,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           );
         }
       } else {
+        // Return detailed error for debugging
         return json(
           {
             success: false,
             error: "Shop domain required. Please ensure shop parameter is sent.",
+            debug: {
+              receivedShopDomain: shopDomain || null,
+              headers: {
+                "X-Shopify-Shop-Domain": request.headers.get("X-Shopify-Shop-Domain"),
+                "Origin": request.headers.get("Origin"),
+                "Referer": request.headers.get("Referer"),
+              },
+              formDataShop: formData.get("shop"),
+              urlParams: new URL(request.url).searchParams.get("shop"),
+            },
           },
           { status: 400, headers }
         );
@@ -158,9 +192,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   try {
-    const formData = await request.formData();
-    const customerId = formData.get("customer_id") as string;
-    const activationCode = formData.get("activation_code") as string;
+    // FormData already read above, use the same instance
+    const customerId = formData.get("customer_id")?.toString() || "";
+    const activationCode = formData.get("activation_code")?.toString() || "";
 
     if (!customerId || !activationCode) {
       return json(
