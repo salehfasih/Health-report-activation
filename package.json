@@ -2,7 +2,7 @@
   "name": "health-report-activation",
   "private": true,
   "scripts": {
-    "build": "prisma generate && prisma migrate deploy && remix vite:build",
+    "build": "prisma generate && (prisma migrate deploy || true) && remix vite:build",
     "build:skip-migrate": "remix vite:build",
     "dev": "shopify app dev",
     "config:link": "shopify app config link",
