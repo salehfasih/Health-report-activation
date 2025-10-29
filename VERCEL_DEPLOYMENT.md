@@ -6,10 +6,13 @@ Add these environment variables in your Vercel project settings (Settings → En
 
 ### Shopify App Configuration (Required)
 ```
-SHOPIFY_API_KEY=f83cc75d66d87fca2a84f47b67e16a1b
-SHOPIFY_API_SECRET=3c0cd8ca75d3e9abbe66b2568ebe9619
+SHOPIFY_API_KEY=your_api_key_here
+SHOPIFY_API_SECRET=your_api_secret_here
 SCOPES=write_products,read_products,write_customers
-SHOPIFY_APP_URL=https://frontend-product-builder.vercel.app
+SHOPIFY_APP_URL=https://your-app.vercel.app
+SHOPIFY_ADMIN_API_TOKEN=shpat_your_token_here
+SHOPIFY_SHOP_DOMAIN=your-store.myshopify.com
+SHOPIFY_ADMIN_API_VERSION=2025-07
 ```
 
 ### Database Configuration (Required for Production)
