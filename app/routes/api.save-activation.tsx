@@ -1,8 +1,8 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { authenticate, sessionStorage } from "../shopify.server";
-import { GraphqlClient } from "@shopify/shopify-api";
 import { apiVersion } from "../shopify.server";
+import { shopifyApi, LATEST_API_VERSION } from "@shopify/shopify-api";
 
 // CORS headers helper
 const corsHeaders = (origin: string | null) => {
@@ -118,17 +118,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             // Use the first offline session (usually the one we want for API calls)
             const session = sessions.find((s: any) => !s.isOnline) || sessions[0];
             if (session && session.accessToken) {
-              // Create GraphQL client directly
-              const client = new GraphqlClient({
-                session,
-                apiVersion,
+              // Create Shopify API instance to get GraphQL client
+              const shopify = shopifyApi({
+                apiKey: process.env.SHOPIFY_API_KEY || "",
+                apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
+                apiVersion: apiVersion || LATEST_API_VERSION,
+                scopes: process.env.SCOPES?.split(",") || [],
+                hostName: process.env.SHOPIFY_APP_URL?.replace(/^https?:\/\//, "") || "",
+                isEmbeddedApp: true,
               });
+
+              // Create GraphQL client from session
+              const adminGraphql = new shopify.clients.Graphql({ session });
               
               // Create a compatible admin object that matches the expected interface
               admin = {
                 graphql: async (query: string, options?: any) => {
                   try {
-                    const response = await client.request(query, options?.variables || {});
+                    const response = await adminGraphql.request(query, options?.variables || {});
                     return {
                       json: async () => ({ data: response }),
                       ok: true,
