@@ -1,0 +1,11 @@
+name = "Activation Form"
+
+uid = "746697b2-c39e-7c70-34a9-448359b2e2f7a081f4a3"
+
+type = "theme"
+api_version = "2025-01"
+
+[extension_points]
+[[extension_points.targets]]
+target = "theme-app-extension"
+

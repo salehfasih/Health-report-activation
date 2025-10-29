@@ -1,0 +1,86 @@
+<!-- Include Alpine.js in your theme.liquid or layout file -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+{% if customer %}
+  <script>
+    window.APP_URL = "{{ section.settings.app_url }}";
+  </script>
+
+  <!-- Activation form -->
+  <div id="activation-form" x-data="activationForm" x-init="init()" style="max-width: 400px; margin: 20px auto; padding: 16px; border: 1px solid #e1e1e1; border-radius: 8px; background: #fff;">
+    <h3 style="margin-bottom: 12px;">Activate your kit</h3>
+    <form @submit.prevent="submit">
+      <input type="hidden" x-model="customerId" value="{{ customer.id }}" />
+      <label style="display:block; margin-bottom:6px;">Activation code</label>
+      <input type="text" x-model="code" :readonly="hasExisting" required style="width:100%; padding:8px 10px; margin-bottom:12px; border:1px solid #ccc; border-radius:4px;" />
+      <button type="submit" :disabled="submitting || hasExisting" style="background:#0a7cff; color:#fff; border:none; padding:10px 16px; border-radius:4px; cursor:pointer;">
+        <span x-text="submitting ? 'Saving…' : 'Activate'"></span>
+      </button>
+    </form>
+    <p x-text="message" style="margin-top:10px;"></p>
+  </div>
+{% else %}
+  <div>
+    Please Login First
+  </div>
+{% endif %}
+
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('activationForm', () => ({
+      customerId: '',
+      code: '',
+      hasExisting: false,
+      submitting: false,
+      message: '',
+      init() {
+        const hidden = this.$el.querySelector('input[type="hidden"]');
+        this.customerId = hidden ? hidden.value : '';
+        this.code = `{{ customer.metafields.custom.activation_code | default: '' }}`;
+        this.hasExisting = !!this.code;
+      },
+      async submit() {
+        if (!this.code) { this.message = 'Please enter activation code'; return; }
+        if (!this.customerId) { this.message = 'Please login first'; return; }
+        this.submitting = true;
+        this.message = '';
+        try {
+          const base = (window.APP_URL || 'https://natural-exciting-government-awards.trycloudflare.com');
+          const fd = new FormData();
+          fd.append('customer_id', this.customerId);
+          fd.append('activation_code', this.code);
+          const res = await fetch(base + '/api/save-activation', { method: 'POST', body: fd });
+          const data = await res.json();
+          if (!res.ok || data?.success !== true) {
+            const err = (data?.errors && data.errors[0]?.message) || data?.error || 'Failed to save';
+            this.message = 'Error: ' + err;
+          } else {
+            this.message = '✅ Activation code saved';
+            this.hasExisting = true;
+          }
+        } catch (e) {
+          console.error(e);
+          this.message = 'Request failed';
+        } finally {
+          this.submitting = false;
+        }
+      }
+    }));
+  });
+  </script>
+
+{% schema %}
+{
+  "name": "Activation Form",
+  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "app_url",
+      "label": "App URL",
+      "default": "https://frontend-product-builder.vercel.app"
+    }
+  ]
+}
+{% endschema %}
+
