@@ -2,7 +2,7 @@
 
 client_id = "ad17cc3690ef334bb276ea77809dc631"
 name = "Health Report Activation"
-application_url = "https://natural-exciting-government-awards.trycloudflare.com"
+application_url = "https://health-report-activation.vercel.app/"
 embedded = true
 
 [build]
@@ -24,4 +24,4 @@ api_version = "2026-01"
 scopes = "write_products,write_customers"
 
 [auth]
-redirect_urls = [ "https://natural-exciting-government-awards.trycloudflare.com/api/auth" ]
+redirect_urls = ["https://health-report-activation.vercel.app/auth/callback", "https://health-report-activation.vercel.app/api/auth/callback"]
