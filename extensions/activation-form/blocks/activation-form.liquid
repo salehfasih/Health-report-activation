@@ -49,7 +49,14 @@
           const fd = new FormData();
           fd.append('customer_id', this.customerId);
           fd.append('activation_code', this.code);
-          const res = await fetch(base + '/api/save-activation', { method: 'POST', body: fd });
+          fd.append('shop', '{{ shop.permanent_domain }}');
+          const res = await fetch(base + '/api/save-activation', { 
+            method: 'POST', 
+            body: fd,
+            headers: {
+              'X-Shopify-Shop-Domain': '{{ shop.permanent_domain }}'
+            }
+          });
           const data = await res.json();
           if (!res.ok || data?.success !== true) {
             const err = (data?.errors && data.errors[0]?.message) || data?.error || 'Failed to save';
