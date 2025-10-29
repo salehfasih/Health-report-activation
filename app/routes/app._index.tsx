@@ -132,15 +132,13 @@ export default function Index() {
             </Card>
           </Layout.Section>
 
-          <Layout.Section>
+          {/* <Layout.Section>
             <Card>
               <BlockStack gap="300">
                 <Text as="h2" variant="headingMd">
                   Test activation (Admin)
                 </Text>
-                <Text as="p" variant="bodyMd">
-                  Posts directly to <code>/api/save-activation</code> using your Admin API token.
-                </Text>
+                
                 <fetcher.Form method="post" action="/api/save-activation">
                   <BlockStack gap="200">
                     <TextField name="customer_id" label="Customer ID" autoComplete="off" />
@@ -169,9 +167,9 @@ export default function Index() {
                 )}
               </BlockStack>
             </Card>
-          </Layout.Section>
+          </Layout.Section> */}
 
-          <Layout.Section>
+          {/* <Layout.Section>
             <Card>
               <BlockStack gap="300">
                 <Text as="h2" variant="headingMd">
@@ -197,7 +195,7 @@ export default function Index() {
                 </Box>
               </BlockStack>
             </Card>
-          </Layout.Section>
+          </Layout.Section> */}
         </Layout>
       </BlockStack>
     </Page>
