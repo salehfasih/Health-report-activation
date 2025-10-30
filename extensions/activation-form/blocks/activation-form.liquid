@@ -155,6 +155,17 @@ table.report_table {
     margin-bottom:10px !important;
 }
 
+
+@media (min-width: 320px) and (max-width: 768px) {
+  .activation_cards {
+      flex-direction: column;
+      padding: 10px;
+  }
+
+  .activation_cards .activate_card {
+      width: 100%;
+  }
+}
 {% endstyle %}
 <script>
   document.addEventListener('alpine:init', () => {
