@@ -46,8 +46,7 @@
             <polygon points="10 8 16 12 10 16 10 8"></polygon>
           </svg>
           <div>
-            <p class="font-medium text-foreground mb-1">Instructions for Intracellular NAD<sup>®</sup> test with dried blood spots</p>
-            <p class="text-sm text-muted-foreground">Watch our step-by-step video guide to learn how to collect your sample correctly.</p>
+          {{section.settings.instructions}}
           </div>
         </div>
       </div>
@@ -230,13 +229,17 @@ table.report_table tr th{
   "name": "Activation Form",
   "target": "section",
   "settings": [
-    // {
-    //   "type": "text",
-    //   "id": "app_url",
-    //   "label": "App URL",
-    //   "default": "https://frontend-product-builder.vercel.app"
-    // }
+    {
+      "type": "richtext",
+      "id": "instructions",
+      "label": "Instructions",
+      "default": "<p>Instructions for Intracellular NAD® test with dried blood spots</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Activation Form"
+    }
   ]
 }
 {% endschema %}
-
