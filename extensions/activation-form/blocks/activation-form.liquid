@@ -46,10 +46,9 @@
             <polygon points="10 8 16 12 10 16 10 8"></polygon>
           </svg>
           <div>
-          {{
-            section.settings.instructions
-          }} 
+          {{section.settings.instructions}}
           </div>
+          {{section.settings.activate_note}}
         </div>
       </div>
     </div>
@@ -236,6 +235,12 @@ table.report_table tr th{
       "id": "instructions",
       "label": "Instructions",
       "default": "<p>Instructions for Intracellular NAD® test with dried blood spots</p>"
+    },
+    {
+      "type": "text",
+      "id": "activate_note",
+      "label": "Instructions",
+      "default": "hello"
     },
   ]
 }
