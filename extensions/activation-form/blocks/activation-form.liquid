@@ -45,7 +45,10 @@
             <circle cx="12" cy="12" r="10"></circle>
             <polygon points="10 8 16 12 10 16 10 8"></polygon>
           </svg>
-          <div>
+          <div class="activate_notice">
+            {%if block.settings.activation_code_image != blank %}
+              <img src="{{ block.settings.activation_code_image | image_url: width: 100 }}" alt="Activation Code Image" class="w-full h-auto">
+            {% endif %}
             {% if block.settings.instructions != blank %}
               {{ block.settings.instructions }}
             {% endif %}
@@ -261,6 +264,12 @@ table.report_table tr th{
   "name": "Activation Form",
   "target": "section",
   "settings": [
+    {
+      "type": "image_picker",
+      "id": "activation_code_image",
+      "label": "Card Image",
+      "info": "This image will be displayed on the blood spot card image"
+    }
     {
       "type": "richtext",
       "id": "instructions",
