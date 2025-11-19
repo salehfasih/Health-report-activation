@@ -39,7 +39,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     const formData = await request.formData();
     const customerIdRaw = formData.get("customer_id");
-    const activationCode = formData.get("activation_code");
+    const activationCodeRaw = formData.get("activation_code");
+
+    const activationCode =
+      typeof activationCodeRaw === "string" ? activationCodeRaw.trim() : "";
 
     if (!customerIdRaw || !activationCode) {
       return json(
@@ -82,6 +85,60 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     // Prepare GraphQL mutation
     const ownerGid = `gid://shopify/Customer/${String(customerIdRaw).trim()}`;
 
+    const existingQuery = `
+      query GetCustomerSampleIds($id: ID!) {
+        customer(id: $id) {
+          id
+          metafield(namespace: "custom", key: "sample_id") {
+            value
+          }
+        }
+      }
+    `;
+
+    const existingResp = await fetch(adminGraphqlUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": adminAccessToken,
+      },
+      body: JSON.stringify({ query: existingQuery, variables: { id: ownerGid } }),
+    });
+
+    const existingData = await existingResp.json();
+
+    if (existingData.errors) {
+      return json(
+        {
+          success: false,
+          error: existingData.errors[0]?.message || "Unable to read existing codes",
+          errors: existingData.errors,
+        },
+        { status: 400, headers },
+      );
+    }
+
+    const metafieldValue = existingData?.data?.customer?.metafield?.value;
+    const existingValue =
+      typeof metafieldValue === "string" ? metafieldValue : "";
+
+    const existingCodes = existingValue
+      ? existingValue.split(",").map((code: string) => code.trim()).filter(Boolean)
+      : [];
+
+    const duplicate = existingCodes.some(
+      (code: string) => code.toUpperCase() === activationCode.toUpperCase(),
+    );
+
+    if (duplicate) {
+      return json(
+        { success: false, error: "Activation code already saved" },
+        { status: 400, headers },
+      );
+    }
+
+    const updatedValue = [...existingCodes, activationCode].join(existingCodes.length ? ", " : "");
+
     const mutation = `
       mutation SaveCustomerCode($metafields: [MetafieldsSetInput!]!) {
         metafieldsSet(metafields: $metafields) {
@@ -104,9 +161,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         {
           ownerId: ownerGid,
           namespace: "custom",
-          key: "activation_code",
+          key: "sample_id",
           type: "single_line_text_field",
-          value: String(activationCode),
+          value: updatedValue,
         },
       ],
     };
