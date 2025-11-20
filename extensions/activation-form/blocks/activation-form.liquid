@@ -1,11 +1,9 @@
 <!-- Include Alpine.js in your theme.liquid or layout file -->
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
 {% if customer %}
   <script>
     window.APP_URL = "{{ section.settings.app_url }}";
   </script>
-
   <div class="activation_cards">
     <!-- Left Card: Activation Form -->
     <div class="activate_card" x-data="activationForm" x-init="init()">
@@ -17,28 +15,34 @@
         <form @submit.prevent="submit">
           <input type="hidden" x-model="customerId" value="{{ customer.id }}" />
           <div class="flex gap-3">
-            <input 
-              type="text" 
-              x-model="code" 
-              required 
+            <input
+              type="text"
+              x-model="code"
+              required
               minlength="14"
               maxlength="14"
               pattern="^[A-Za-z]{2}[0-9]{5}-[0-9]{6}$"
               title="Enter 7 characters: 2 letters followed by 5 digits - 6 digits (e.g., BS12345-123456)"
-              placeholder="e.g., BS12345-123456" 
+              placeholder="e.g., BS12345-123456"
               class="flex w-full rounded-md border border-input bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm flex-1 h-12 text-base"
             />
-            <button 
-              type="submit" 
-              :disabled="submitting" 
+            <button
+              type="submit"
+              :disabled="submitting"
               class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-primary-foreground hover:bg-primary/90 py-2 h-12 px-8 bg-gradient-primary hover:opacity-90 transition-opacity"
             >
               <span x-text="submitting ? 'Saving…' : 'Activate'"></span>
             </button>
           </div>
-          <p x-show="message" x-text="message" class="mt-3 text-sm" :class="message.includes('Error') || message.includes('failed') ? 'text-red-600' : 'text-green-600'"></p>
+          <p
+            x-show="message"
+            x-text="message"
+            class="mt-3 text-sm"
+            :class="(message || '').toLowerCase().includes('error') || (message || '').toLowerCase().includes('failed')
+              ? 'text-red-600'
+              : 'text-green-600'"
+          ></p>
         </form>
-
         <div class="bottom_card">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-play w-5 h-5 text-primary mt-0.5 flex-shrink-0">
             <circle cx="12" cy="12" r="10"></circle>
@@ -55,7 +59,6 @@
         </div>
       </div>
     </div>
-
     <!-- Right Card: Latest Samples (Empty) -->
     <div class="activate_card">
       <div class="flex flex-col space-y-1.5 p-6">
@@ -91,21 +94,20 @@
                 {% endfor %}
               {% else %}
                 <tr>
-                  <td colspan="4" style="text-align: center; color: #6b7280; padding: 2rem;">No samples activated yet</td>
+                  <td colspan="4" style="text-align: center; color: #6B7280; padding: 2rem;">No samples activated yet</td>
                 </tr>
               {% endif %}
             </tbody>
           </table>
         </div>
       </div>
-    </div> 
+    </div>
   </div>
 {% else %}
   <div class="rounded-lg border bg-card text-card-foreground shadow-sm shadow-card p-6">
     <p class="text-center text-muted-foreground">Please Login First</p>
   </div>
 {% endif %}
-
 {% style %}
   .activation_cards {
     margin: 0px 0 30px 0;
@@ -118,34 +120,30 @@
 .activate_notice img {
     width: 100%;
 }
-
 .activation_cards .activate_card {
   background:white;
     width: 49%;
-    padding: 30px;
+    padding: 30px 20px;
     border-radius: .75rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #E5E7EB;
 }
 .activate_card p{
     font-size:16px;
     color:#676f7e !important;
     margin:10px 0 20pxauto;
 }
-
 .flex.gap-3 {
     display: flex;
 }
 .activate_card h3 {
     font-size: 24px;
-    color: #2b303b;
+    color: #2B303B;
     font-weight: 600;
     margin: 10px 0;
 }
-
 table.report_table {
     width: 100%;
 }
-
 .activate_card input{
     margin-right:10px;
     width:78%;
@@ -158,12 +156,11 @@ table.report_table {
 .activate_card button{
     border-radius:10px;
     font-size:15px;
-    background: #7a5c43;
+    background: #7A5C43;
     color:white;
     padding:12px 20px;
     font-weight:600;
 }
-
 .bottom_card {
     margin:30px 0 0 0;
     padding:10px;
@@ -180,12 +177,10 @@ table.report_table {
     padding: 2rem;
     width: 100%;
 }
-
 .bottom_card > div {
     flex: 1;
     min-width: 0;
 }
-
 .bottom_card p{
     font-weight:500;
     font-size:15px;
@@ -193,7 +188,6 @@ table.report_table {
     margin:0 !important;
     margin-bottom:10px !important;
 }
-
 /* .bottom_card .instructions-content {
     font-weight:500;
     font-size:15px;
@@ -201,7 +195,6 @@ table.report_table {
     margin:0 !important;
     margin-bottom:10px !important;
 }
-
 .bottom_card .instructions-content p {
     font-weight:500;
     font-size:15px;
@@ -209,7 +202,6 @@ table.report_table {
     margin:0 !important;
     margin-bottom:10px !important;
 }
-
 .bottom_card .activate-note-content {
     font-weight:500;
     font-size:15px;
@@ -217,33 +209,28 @@ table.report_table {
     margin:0 !important;
     margin-top:10px !important;
 } */
-
 table.report_table tr th{
   text-align: left;
-  padding: 12px;
+  padding: 12px 6px;
   font-weight: 600;
-  color: #2b303b;
-  border-bottom: 1px solid #e5e7eb;
-  font-size: 14px;
+  color: #2B303B;
+  border-bottom: 1px solid #E5E7EB;
+  font-size: 13px;
 }
-
 table.report_table tr td{
-  padding: 12px;
-  border-bottom: 1px solid #f3f4f6;
-  color: #2b303b;
-  font-size: 15px;
+  padding: 12px 6px;
+    border-bottom: 1px solid #F3F4F6;
+    color: #2B303B;
+    font-size: 13px;
 }
-
 table.report_table tbody tr:hover{
-  background-color: #f9fafb;
+  background-color: #F9FAFB;
 }
-
 @media (min-width: 320px) and (max-width: 768px) {
   .activation_cards {
       flex-direction: column;
       padding: 10px;
   }
-
   .activation_cards .activate_card {
       width: 100%;
   }
@@ -275,7 +262,7 @@ table.report_table tbody tr:hover{
           .map(code => code.toUpperCase())
           .includes(normalized);
         if (hasDuplicate) {
-          this.message = 'Error: Activation code already saved';
+          this.message = 'Failed: Activation code already saved';
           return;
         }
         this.submitting = true;
@@ -288,8 +275,8 @@ table.report_table tbody tr:hover{
           fd.append('activation_code', trimmedCode);
           fd.append('shop', shopDomain);
           console.log('Sending request with shop domain:', shopDomain);
-          const res = await fetch(base + '/api/save-activation', { 
-            method: 'POST', 
+          const res = await fetch(base + '/api/save-activation', {
+            method: 'POST',
             body: fd
             // Note: Custom headers may be blocked by CORS, so shop is sent in FormData
           });
@@ -298,7 +285,7 @@ table.report_table tbody tr:hover{
             const err = (data?.errors && data.errors[0]?.message) || data?.error || 'Failed to save';
             this.message = 'Error: ' + err;
           } else {
-            this.message = '✅ Activation code saved';
+            this.message = ':white_check_mark: Activation code saved';
             this.code = '';
             this.existingCodes.push(trimmedCode);
             // Reload page after 1 second to show updated table
@@ -316,7 +303,6 @@ table.report_table tbody tr:hover{
     }));
   });
   </script>
-
 {% schema %}
 {
   "name": "Activation Form",
@@ -337,4 +323,3 @@ table.report_table tbody tr:hover{
   ]
 }
 {% endschema %}
-
