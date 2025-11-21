@@ -8,8 +8,8 @@
     <!-- Left Card: Activation Form -->
     <div class="activate_card" x-data="activationForm" x-init="init()">
       <div class="flex flex-col space-y-1.5 p-6">
-        <h3 class="font-semibold tracking-tight text-2xl">Activate your kit</h3>
-        <p class="text-muted-foreground text-base">Please enter your kit ID to active your kit.</p>
+        <h3 class="font-semibold tracking-tight text-2xl">Activate My Test</h3>
+        <p class="text-muted-foreground text-base">Please enter your unique test code to activate your test</p>
       </div>
       <div class="p-6 pt-0 space-y-6">
         <form @submit.prevent="submit">
@@ -44,10 +44,10 @@
           ></p>
         </form>
         <div class="bottom_card">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-play w-5 h-5 text-primary mt-0.5 flex-shrink-0">
+          {% comment %} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-play w-5 h-5 text-primary mt-0.5 flex-shrink-0">
             <circle cx="12" cy="12" r="10"></circle>
             <polygon points="10 8 16 12 10 16 10 8"></polygon>
-          </svg>
+          </svg> {% endcomment %}
           <div class="activate_notice">
             {%if block.settings.activation_code_image != blank %}
               <img src="{{ block.settings.activation_code_image | image_url: width: 600 }}" alt="Activation Code Image" class="w-full h-auto">
@@ -62,16 +62,16 @@
     <!-- Right Card: Latest Samples (Empty) -->
     <div class="activate_card">
       <div class="flex flex-col space-y-1.5 p-6">
-        <h3 class="font-semibold tracking-tight text-2xl">Latest Samples</h3>
+        <h3 class="font-semibold tracking-tight text-2xl">Latest Tests</h3>
       </div>
       <div class="p-6 pt-0">
         <div class="relative w-full overflow-auto">
           <table class="report_table">
             <thead>
               <tr>
-                <th >Patient</th>
-                <th >Sample ID</th>
-                <th >Code</th>
+                <th >Customer</th>
+                <th >Test</th>
+                <th >Test Code</th>
                 <th >Status</th>
               </tr>
             </thead>
